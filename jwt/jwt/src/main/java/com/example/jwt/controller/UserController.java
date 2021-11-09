@@ -21,11 +21,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    //
     @PostMapping("/test-redirect")
     public void testRedirect(HttpServletResponse response) throws IOException {
         response.sendRedirect("/api/user");
     }
 
+    // 회원가입 Controller (username, password, nickname)
     @PostMapping("/signup")
     public ResponseEntity<User> signup(
             @Valid @RequestBody UserDto userDto
@@ -33,12 +35,14 @@ public class UserController {
         return ResponseEntity.ok(userService.signup(userDto));
     }
 
+    // USER와 ADMIN 권한만 호출하는 Controller
     @GetMapping("/user")
     @PreAuthorize("hasAnyRole('USER','ADMIN')") // User와 ADMIN 권한 모두 호출 가능하도록
     public ResponseEntity<User> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getMyUserWithAuthorities().get());
     }
 
+    // ADMIN 권한만 호출하는 Contorller
     @GetMapping("/user/{username}")
     @PreAuthorize("hasAnyRole('ADMIN')") // ADMIN권한만
     public ResponseEntity<User> getUserInfo(@PathVariable String username) {
